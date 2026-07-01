@@ -221,9 +221,10 @@ var FOOT = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoO
   var fl=document.getElementById('ftLogo');   if(fl)  fl.src='data:image/jpeg;base64,'+FOOT;
 })();
 
-// ── API KEY (obfuscated) ──────────────────────────────────
-var _a='sk-ant-api03-d-tnrq7',_b='MDRHtIpLNllNF047EgMW',_c='GDKGnxItpNP2bFUaxEM0',_d='KLGwldylTTI4pdYonEKdsKdCLzGH23tJ1zpD7Kw-Zz9OFQAA';
-var KEY=_a+_b+_c+_d;
+// ── BACKEND ENDPOINT ──────────────────────────────────────
+// This is NOT a secret — it's just the address of your Worker.
+// The real API key lives only inside the Worker, never in this file.
+var WORKER_URL='https://keepmoving-hyrox.georgeprovan.workers.dev';
 
 // ── SLIDERS ───────────────────────────────────────────────
 document.getElementById('rS').oninput=function(){document.getElementById('vS').textContent=this.value+' kg'};
@@ -294,15 +295,12 @@ async function callAPI(sys,usr,attempt){
   attempt=attempt||1;
   var resp;
   try{
-    resp=await fetch('https://api.anthropic.com/v1/messages',{
+    resp=await fetch(WORKER_URL,{
       method:'POST',
       mode:'cors',
       credentials:'omit',
       headers:{
-        'Content-Type':'application/json',
-        'x-api-key':KEY,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
+        'Content-Type':'application/json'
       },
       body:JSON.stringify({
         model:'claude-haiku-4-5-20251001',
